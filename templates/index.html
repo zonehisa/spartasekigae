@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>スパルタキャンプ席替えアプリ</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="{{ url_for('static', filename='img/logo.jpg') }}" alt="スパルタキャンプロゴ" class="logo">
+            <h1>スパルタキャンプ席替えアプリ</h1>
+        </div>
+
+        <div id="capture-area">
+            <div class="seating-grid">
+                {% for seat in seating.seats %}
+                <div class="seat">{{ seat }}</div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="button-container">
+            <button id="shuffleButton">席替え</button>
+            <button id="screenshotButton">クリップボードにコピー</button>
+            <button id="editButton">参加者編集</button>
+            <button id="historyButton">履歴表示</button>
+        </div>
+
+        <!-- 参加者編集モーダル -->
+        <div id="editModal" class="modal">
+            <div class="modal-content">
+                <h2>参加者リスト編集</h2>
+                <div class="edit-mode-switch">
+                    <button id="individualMode" class="active">個別入力</button>
+                    <button id="bulkMode">一括入力</button>
+                </div>
+                <div id="individualEdit" class="participants-editor">
+                    {% for participant in participants %}
+                    <div class="participant-input">
+                        <input type="text" value="{{ participant }}" maxlength="20">
+                    </div>
+                    {% endfor %}
+                </div>
+                <div id="bulkEdit" class="bulk-editor" style="display: none;">
+                    <textarea id="bulkInput" placeholder="参加者名を1行ずつ入力してください（15名）"></textarea>
+                    <div class="bulk-info">
+                        現在: <span id="participantCount">0</span>/15名
+                    </div>
+                </div>
+                <div class="modal-buttons">
+                    <button id="saveParticipants">保存</button>
+                    <button id="cancelEdit">キャンセル</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 座席履歴モーダル -->
+        <div id="historyModal" class="modal">
+            <div class="modal-content">
+                <h2>座席履歴</h2>
+                <div class="history-list">
+                    {% for entry in history %}
+                    <div class="history-entry">
+                        <div class="history-date">{{ entry.date }}</div>
+                        <div class="history-seating-grid">
+                            {% for seat in entry.seats %}
+                            <div class="history-seat">{{ seat }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="modal-buttons">
+                    <button id="clearHistory" class="danger-button">履歴をクリア</button>
+                    <button id="closeHistory">閉じる</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- シャッフルアニメーション用のオーバーレイ -->
+        <div id="shuffleOverlay" class="shuffle-overlay">
+            <div class="shuffle-animation">
+                <div class="shuffle-text">席替え中...</div>
+                <div class="shuffle-dots"></div>
+            </div>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+
+</html>
