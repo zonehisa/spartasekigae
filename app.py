@@ -15,31 +15,41 @@ participants = DEFAULT_PARTICIPANTS.copy()
 # 5×5のグリッドでの席の配置（Noneは空席を表す）
 SEAT_LAYOUT = [
     0,
+    4,
+    None,
+    5,
+    9,
     1,
+    3,
     None,
     6,
-    4,
-    3,
-    5,
-    None,
-    7,
     8,
     2,
     None,
     None,
     None,
-    14,
+    7,
     None,
     None,
     None,
     None,
     None,
     10,
-    13,
-    12,
-    9,
     11,
+    12,
+    13,
+    14,
 ]
+
+# 参加者数に応じてシートレイアウトを調整
+if len(participants) == 14:
+    SEAT_LAYOUT[10] = None  # 10番目の席を空席に
+elif len(participants) == 13:
+    SEAT_LAYOUT[14] = None  # 14番目の席を空席に
+elif len(participants) == 12:
+    SEAT_LAYOUT[11] = None  # 11番目の席を空席に
+elif len(participants) == 11:
+    SEAT_LAYOUT[12] = None  # 12番目の席を空席に
 
 # 現在の席配置を保存
 current_seating = {"seats": [participants[i] if i is not None else "" for i in SEAT_LAYOUT]}
@@ -116,8 +126,10 @@ def update_participants():
     global participants, current_seating
     try:
         new_participants = request.json.get("participants", [])
-        if len(new_participants) != 15:
-            return jsonify({"error": "参加者は15名である必要があります"}), 400
+        if len(new_participants) < 1:
+            return jsonify({"error": "参加者は1名以上である必要があります"}), 400
+        if len(new_participants) > 15:
+            return jsonify({"error": "参加者は15名以下である必要があります"}), 400
 
         # 重複チェック
         if len(set(new_participants)) != len(new_participants):
@@ -193,7 +205,7 @@ def shuffle_seats():
 @app.route("/clear_history", methods=["POST"])
 def clear_history():
     try:
-        # 空の履歴リストで上書き保存
+        # 空の履歴リストで���書き保存
         save_seating_history([])
         return jsonify({"message": "履歴をクリアしました"})
     except Exception as e:
