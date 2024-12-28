@@ -30,7 +30,7 @@ class TestAPI(unittest.TestCase):
         self.assertIn("message", data)
 
     def test_invalid_update_participants(self):
-        """無効���参加者更新のテスト"""
+        """無効な参加者更新のテスト"""
         # 重複した参加者
         test_data = {"participants": ["Alice", "Alice", "Bob"]}
         response = self.app.post("/update_participants", json=test_data)
