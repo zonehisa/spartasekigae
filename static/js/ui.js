@@ -1,3 +1,5 @@
+import { SeatingAPI } from './api.js';
+
 export class UIManager {
   constructor() {
     this.elements = {
@@ -19,7 +21,23 @@ export class UIManager {
       closeHistory: document.getElementById('closeHistory'),
       clearHistory: document.getElementById('clearHistory'),
     };
+
+    // プレースホルダーとカウンター表示を更新
+    this.updateParticipantLimits();
     this.initializeEventListeners();
+  }
+
+  updateParticipantLimits() {
+    // バルク入力のプレースホルダーを更新
+    this.elements.bulkInput.placeholder =
+      `参加者名を1行ずつ入力してください（${SeatingAPI.MIN_PARTICIPANTS}～${SeatingAPI.MAX_PARTICIPANTS}名）`;
+
+    // カウンター表示を更新
+    const bulkInfo = this.elements.participantCount.parentElement;
+    bulkInfo.textContent = bulkInfo.textContent.replace(
+      /\d+名/,
+      `${SeatingAPI.MIN_PARTICIPANTS}～${SeatingAPI.MAX_PARTICIPANTS}名`
+    );
   }
 
   initializeEventListeners() {
@@ -69,7 +87,7 @@ export class UIManager {
     this.elements.participantCount.textContent = lines.length;
     const bulkInfo = this.elements.participantCount.parentElement;
 
-    if (lines.length !== 15) {
+    if (lines.length < SeatingAPI.MIN_PARTICIPANTS || lines.length > SeatingAPI.MAX_PARTICIPANTS) {
       bulkInfo.classList.add('error');
     } else {
       bulkInfo.classList.remove('error');

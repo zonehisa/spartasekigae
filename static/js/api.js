@@ -1,4 +1,8 @@
 export class SeatingAPI {
+  // 設定情報
+  static MIN_PARTICIPANTS = 1;
+  static MAX_PARTICIPANTS = 15;
+
   static async shuffleSeats() {
     const response = await fetch('/shuffle');
     if (!response.ok) {

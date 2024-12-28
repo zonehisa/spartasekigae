@@ -30,7 +30,7 @@ class SeatingApp {
 
       setTimeout(() => location.reload(), 500);
     } catch (error) {
-      console.error('席替えに失敗しまし���:', error);
+      console.error('席替えに失敗しました:', error);
       alert(error.message || '席替えに失敗しました。もう一度お試しください。');
     } finally {
       this.setButtonsDisabled(false);
