@@ -57,5 +57,21 @@ def clear_history():
         return jsonify({"error": str(e)}), 500
 
 
+@app.route("/move_seat", methods=["POST"])
+def move_seat():
+    try:
+        from_pos = request.json.get("from_pos")
+        to_pos = request.json.get("to_pos")
+        is_swap = request.json.get("is_swap", False)
+
+        new_seating = seating_manager.move_seat(from_pos, to_pos, is_swap)
+        HistoryManager.add_to_history(new_seating)
+        return jsonify(new_seating)
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 400
+    except Exception as e:
+        return jsonify({"error": "予期せぬエラーが発生しました"}), 500
+
+
 if __name__ == "__main__":
     app.run(debug=True)

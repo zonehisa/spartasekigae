@@ -108,3 +108,41 @@ class SeatingManager:
         self.participants = new_participants.copy()  # 参加者リストをコピーして保存
         # 参加者リストの更新時は順番を維持
         self.current_seating = {"seats": self.create_seating_layout(maintain_order=True)}
+
+    def move_seat(self, from_pos: int, to_pos: int, is_swap: bool = False) -> Dict[str, List[str]]:
+        """
+        席の移動または交換を行う
+        Args:
+            from_pos: 移動元の席のインデックス
+            to_pos: 移動先の席のインデックス
+            is_swap: Trueの場合は席の交換、Falseの場合は移動
+        """
+        if (
+            from_pos < 0
+            or from_pos >= len(self.current_seating["seats"])
+            or to_pos < 0
+            or to_pos >= len(self.current_seating["seats"])
+        ):
+            raise ValueError("無効な席番号です")
+
+        # 移動元の席が空の場合はエラー
+        if not self.current_seating["seats"][from_pos]:
+            raise ValueError("移動元の席が空です")
+
+        # 移動先の席が空でない場合は交換モードが必要
+        if self.current_seating["seats"][to_pos] and not is_swap:
+            raise ValueError("移動先の席が既に使用されています")
+
+        # 席の配置をコピー
+        new_seats = self.current_seating["seats"].copy()
+
+        # 席の交換または移動
+        if is_swap:
+            new_seats[from_pos], new_seats[to_pos] = new_seats[to_pos], new_seats[from_pos]
+        else:
+            new_seats[to_pos] = new_seats[from_pos]
+            new_seats[from_pos] = ""
+
+        # 新しい配置を保存
+        self.current_seating["seats"] = new_seats
+        return self.current_seating

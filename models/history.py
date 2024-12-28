@@ -17,8 +17,11 @@ class HistoryManager:
     @staticmethod
     def save_history(history: List[Dict]) -> None:
         """座席履歴の保存"""
-        with open("seating_history.json", "w", encoding="utf-8") as f:
-            json.dump(history, indent=2, ensure_ascii=False, fp=f)
+        try:
+            with open("seating_history.json", "w", encoding="utf-8") as f:
+                json.dump(history, indent=2, ensure_ascii=False, fp=f)
+        except Exception as e:
+            raise ValueError(f"履歴の保存に失敗しました: {str(e)}")
 
     @staticmethod
     def add_to_history(seating: Dict[str, List[str]]) -> None:

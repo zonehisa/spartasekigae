@@ -20,11 +20,18 @@ export class UIManager {
       historyModal: document.getElementById('historyModal'),
       closeHistory: document.getElementById('closeHistory'),
       clearHistory: document.getElementById('clearHistory'),
+      seatingArea: document.getElementById('seatingArea'),
+    };
+
+    this.dragState = {
+      sourceElement: null,
+      sourceIndex: -1,
     };
 
     // プレースホルダーとカウンター表示を更新
     this.updateParticipantLimits();
     this.initializeEventListeners();
+    this.initializeDragAndDrop();
   }
 
   updateParticipantLimits() {
@@ -117,6 +124,50 @@ export class UIManager {
         this.elements.shuffleOverlay.style.display = 'none';
         resolve();
       }, 750 + Math.random() * 100);
+    });
+  }
+
+  initializeDragAndDrop() {
+    // 席要素にドラッグ＆ドロップイベントを設定
+    const seats = this.elements.seatingArea.querySelectorAll('.seat');
+    seats.forEach((seat, index) => {
+      seat.setAttribute('draggable', 'true');
+
+      seat.addEventListener('dragstart', (e) => {
+        if (!seat.textContent.trim()) return;
+        this.dragState.sourceElement = seat;
+        this.dragState.sourceIndex = index;
+        e.dataTransfer.setData('text/plain', seat.textContent);
+        seat.classList.add('dragging');
+      });
+
+      seat.addEventListener('dragend', () => {
+        seat.classList.remove('dragging');
+      });
+
+      seat.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        seat.classList.add('drag-over');
+      });
+
+      seat.addEventListener('dragleave', () => {
+        seat.classList.remove('drag-over');
+      });
+
+      seat.addEventListener('drop', async (e) => {
+        e.preventDefault();
+        seat.classList.remove('drag-over');
+
+        if (this.dragState.sourceIndex === -1) return;
+
+        try {
+          const isSwap = seat.textContent.trim() !== '';
+          await SeatingAPI.moveSeat(this.dragState.sourceIndex, index, isSwap);
+          location.reload(); // 画面を更新して新しい配置を反映
+        } catch (error) {
+          alert(error.message);
+        }
+      });
     });
   }
 } 
