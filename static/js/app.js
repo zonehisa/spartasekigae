@@ -63,17 +63,10 @@ class SeatingApp {
   }
 
   getParticipantsList() {
-    if (this.ui.elements.bulkEdit.style.display === 'none') {
-      // 個別入力モード
-      const inputs = document.querySelectorAll('.participant-input input');
-      return Array.from(inputs).map(input => input.value.trim());
-    } else {
-      // 一括入力モード
-      return this.ui.elements.bulkInput.value
-        .split('\n')
-        .map(line => line.trim())
-        .filter(line => line !== '');
-    }
+    return this.ui.elements.bulkInput.value
+      .split('\n')
+      .map(line => line.trim())
+      .filter(line => line !== '');
   }
 
   updateSeats(newSeating) {

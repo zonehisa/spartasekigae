@@ -10,9 +10,6 @@ export class UIManager {
       saveParticipants: document.getElementById('saveParticipants'),
       cancelEdit: document.getElementById('cancelEdit'),
       shuffleOverlay: document.getElementById('shuffleOverlay'),
-      individualMode: document.getElementById('individualMode'),
-      bulkMode: document.getElementById('bulkMode'),
-      individualEdit: document.getElementById('individualEdit'),
       bulkEdit: document.getElementById('bulkEdit'),
       bulkInput: document.getElementById('bulkInput'),
       participantCount: document.getElementById('participantCount'),
@@ -48,10 +45,6 @@ export class UIManager {
   }
 
   initializeEventListeners() {
-    // 編集モード切り替え
-    this.elements.individualMode.addEventListener('click', () => this.switchToIndividualMode());
-    this.elements.bulkMode.addEventListener('click', () => this.switchToBulkMode());
-
     // モーダル制御
     this.elements.editButton.addEventListener('click', () => this.showEditModal());
     this.elements.cancelEdit.addEventListener('click', () => this.hideEditModal());
@@ -68,25 +61,6 @@ export class UIManager {
 
     // バルク入力の監視
     this.elements.bulkInput.addEventListener('input', () => this.updateParticipantCount());
-  }
-
-  switchToIndividualMode() {
-    this.elements.individualMode.classList.add('active');
-    this.elements.bulkMode.classList.remove('active');
-    this.elements.individualEdit.style.display = 'grid';
-    this.elements.bulkEdit.style.display = 'none';
-  }
-
-  switchToBulkMode() {
-    this.elements.bulkMode.classList.add('active');
-    this.elements.individualMode.classList.remove('active');
-    this.elements.bulkEdit.style.display = 'block';
-    this.elements.individualEdit.style.display = 'none';
-
-    const inputs = document.querySelectorAll('.participant-input input');
-    const currentList = Array.from(inputs).map(input => input.value).join('\n');
-    this.elements.bulkInput.value = currentList;
-    this.updateParticipantCount();
   }
 
   updateParticipantCount() {

@@ -36,18 +36,7 @@
         <div id="editModal" class="modal">
             <div class="modal-content">
                 <h2>参加者リスト編集</h2>
-                <div class="edit-mode-switch">
-                    <button id="individualMode" class="active">個別入力</button>
-                    <button id="bulkMode">一括入力</button>
-                </div>
-                <div id="individualEdit" class="participants-editor">
-                    {% for participant in participants %}
-                    <div class="participant-input">
-                        <input type="text" value="{{ participant }}" maxlength="20">
-                    </div>
-                    {% endfor %}
-                </div>
-                <div id="bulkEdit" class="bulk-editor" style="display: none;">
+                <div id="bulkEdit" class="bulk-editor">
                     <textarea id="bulkInput" placeholder="参加者名を1行ずつ入力してください"></textarea>
                     <div class="bulk-info">
                         現在: <span id="participantCount">0</span>名
