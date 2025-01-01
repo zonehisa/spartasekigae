@@ -39,8 +39,10 @@ def update_participants():
 @app.route("/shuffle")
 def shuffle_seats():
     try:
+        # 現在の配置を履歴として保存
+        HistoryManager.add_to_history(seating_manager.current_seating)
+        # 新しい配置を生成
         new_seating = seating_manager.shuffle_seats()
-        HistoryManager.add_to_history(new_seating)
         return jsonify(new_seating)
     except ValueError as e:
         return jsonify({"error": str(e)}), 400
@@ -65,11 +67,10 @@ def move_seat():
         is_swap = request.json.get("is_swap", False)
 
         new_seating = seating_manager.move_seat(from_pos, to_pos, is_swap)
-        HistoryManager.add_to_history(new_seating)
         return jsonify(new_seating)
     except ValueError as e:
         return jsonify({"error": str(e)}), 400
-    except Exception as e:
+    except Exception:
         return jsonify({"error": "予期せぬエラーが発生しました"}), 500
 
 
